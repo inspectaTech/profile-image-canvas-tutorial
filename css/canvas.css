@@ -1,1 +1,139 @@
+/*responsive section*/
+@media only screen and (min-width:320px) and (max-width:514px){
+	.display_cont{ position:relative;}
+	.display_cont,.info_cont{
+  width:100%;display:inline-block;margin:15px 2% 0 2% ;
+	}
+}
+@media only screen and (min-width:515px) and (max-width:991px)
+{
+	.display_cont{ position:fixed;}
+	.display_cont,.info_cont{
+  width:45%;display:inline-block;margin:15px 2% 0 2% ;
+}
+}
 
+@media only screen and (min-width:992px) and (max-width:1999px)
+{
+	.display_cont{ position:fixed;}
+	.display_cont,.info_cont{
+  width:45%;display:inline-block;margin:15px 2% 0 2% ;
+}
+}
+
+/*regular section */
+
+*{box-sizing: border-box;}
+html, body
+{/*the trick to this is you need them both*/
+    height: 100%;
+}
+p{font-size:12px;line-height:1.2em;}
+input{ font-size:14px; height:22px; padding:1px 5px;}
+.mock_box{width:100%;position:relative;}
+
+.info_cont{display:inline-block;}
+
+
+.just_words{padding-left:4%;position:relative; width:100%;margin-top:5px;}
+
+#tutorial{border:1px solid black; width:90%; margin:0px 5%;}
+.just_words .setup{font-size:12px;margin:0 0 5px 15px;line-height: 1em;}
+.just_words .code{font-size:10px; width:100%;background-color:#ddd;padding:5px 5px;}
+.ctrl_label{min-height:35px;background-color:#000;cursor:pointer;border:1px solid  #bbb;color:#fff;text-align:center;padding:5px;}
+.ctrl_label h3{margin:0px !important;}
+.ctrl_cont{border:1px solid #ddd;padding:5px 10px;}
+
+.img_ctrl_text_cont{padding:5px;margin-bottom:5px;text-align: justify; }
+.img_ctrl_text_cont.slider{width:75%;margin-left:55px;min-height:270px;}
+.img_ctrl_input{ margin-bottom:10px;}
+.img_ctrl_reset{margin:0px 0 0 5px;max-width:25%;min-width:50px;}
+.pointer{cursor:pointer;}
+.img_ctrl_reset.img_ctrl_example{max-width:65%;min-width:100px;}
+
+.sli_ctrl_contA,.sli_ctrl_contB{position:relative;background-color:#ddd;}
+.sli_ctrl_contA{padding-left:10%;width:80%;height:30px;margin-left:20%;}
+.sli_ctrl_contB{width:35px;  /*position:absolute; top:120px; left:25px;*/ float:left; top:-280px;
+padding:10px 0 0 1%; }
+.sli_ctrl_contA .slider-horizontal{width:50% !important;}
+.sli_ctrl_contB .slider-vertical{height:200px; margin-bottom:5px;}
+.sli_ctrl_contA div{vertical-align: middle;}
+div.slider-handle{background-color: #000;
+background-image: linear-gradient(rgb(74, 74, 74) 0px, rgb(0, 5, 7) 100%); cursor:pointer;/*width:20px;height:30px;*/}
+.save_ctrl_btn{cursor:pointer;width:90%;margin:0 5%;border-radius:5px;}
+.ready{background-color: #000;
+background-image: linear-gradient(rgb(74, 74, 74) 0px, rgb(0, 5, 7) 100%);color:#fff;}
+
+.not_ready{background-color: #000;
+background-image: linear-gradient(rgb(223, 7, 7) 0px, rgb(67, 15, 15) 100%);color:#000;}
+
+/*ninja stars section
+.slider-handle.custom  {
+background-image: url("https://www.clipartkid.com/images/119/ninjastar-clip-art-at-clker-com-vector-clip-art-online-royalty-free-r0e3O2-clipart.png");
+	background-repeat:no-repeat;
+background-size: 30px 30px;
+}
+
+.slider-handle.custom::before {
+	line-height: 20px;
+	font-size: 20px;
+	content: '';
+	color: #726204;
+}
+/*unicode star character '\2605' */
+
+input.sli_ctrl_boxA,input.sli_ctrl_boxB{min-height:25px;border:1px solid #ddd;border-radius:7px;padding:1px 3px 0 0;text-align:center;}
+input.sli_ctrl_boxA{display:inline-block; max-width:60px; min-width:40px;margin:3px;}
+input.sli_ctrl_boxB{display:block;margin-left:-15px; max-width:50px;min-width:30px;}
+
+.smiley{
+	background-image: url("https://s-media-cache-ak0.pinimg.com/originals/3e/ae/f0/3eaef0526bbb8f4d4bc01429a9548521.png");
+	background-repeat:no-repeat;
+
+	/**/
+}
+.scroll_out{display:block;}
+.hibernate{display:none;}
+
+
+.word_wrap{
+/* These are technically the same, but use both */
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+
+  -ms-word-break: break-all;
+  /* This is the dangerous one in WebKit, as it breaks things wherever */
+  word-break: break-all;
+  /* Instead use this non-standard one: */
+  word-break: break-word;
+
+  /* Adds a hyphen where the word breaks, if supported (No Blink) */
+  -ms-hyphens: auto;
+  -moz-hyphens: auto;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+  }
+
+.test_red,.t_rd{border:1px solid red;}
+.test_blue,.t_blu{border:1px solid blue;}
+.test_black,.t_blk{border:1px solid black;}
+.test_green, .t_gn{border:1px solid green;}
+.test_purple, .t_pp{border:1px solid purple;}
+.test_pink, .t_pk{border:1px solid pink;}
+
+
+
+/*
+//webpage
+bootstrap slider found here
+http://seiyria.com/bootstrap-slider/
+
+//repo
+https://github.com/seiyria/bootstrap-slider
+
+cdn found here:
+https://cdnjs.com/libraries/bootstrap-slider
+
+cdn:
+https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/9.7.2/css/bootstrap-slider.min.css
+*/
