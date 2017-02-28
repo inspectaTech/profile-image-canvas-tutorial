@@ -10,6 +10,15 @@ function snake_pit(obj){
   var display = (obj != undefined && obj.display != undefined) ? obj.display : "full";
   var obj_els = {};
 	var first_run = "true";
+	var sliderA = "";
+	var sliderB = "";
+	var sli_ctrl_inputA = "";
+	var	sli_ctrl_inputB = "";
+	var mousedown =  0;
+	var last_panel_clicked_id = "";
+	var last_x = "default";
+	var last_y = "default";
+	var canvas_size = 500;
   //console.log(display);
   var img_default = ["https://upload.wikimedi",
                              "a.org/wikipedia/pt",
@@ -25,8 +34,8 @@ function snake_pit(obj){
 	var img_h = 500;
 	var can_x = 0;
 	var can_y = 0;
-	var can_w = 500;
-	var can_h = 500;
+	var can_w = canvas_size;
+	var can_h = canvas_size;
 
 	try{
 	if(localStorage != undefined && localStorage.canvas_tutorial != undefined && localStorage.canvas_tutorial != "")
@@ -96,7 +105,7 @@ function snake_pit(obj){
 					"label":"THE IMAGE",
 					"contents":"IS",
 					 "title":"The Image Element",
-					 "text":"The first parameter in drawImage().  </br> I created an image object so I wouldn't have to refer to the html element later. </br> <code class='word_wrap'> var image_object=new Image(); \n image_object.onload= </br> image_object.onerror=</br></br>here are some other images to try:</br></br>https://s-media-cache-ak0.pinimg.com/originals/3e/ae/f0/3eaef0526bbb8f4d4bc01429a9548521.png</br></br>https://static.stereogum.com/uploads/2013/08/lauryn-hill.jpg</br></br>https://www.clipartkid.com/images/119/ninjastar-clip-art-at-clker-com-vector-clip-art-online-royalty-free-r0e3O2-clipart.png</br></br>https://s-media-cache-ak0.pinimg.com/originals/3e/ae/f0/3eaef0526bbb8f4d4bc01429a9548521.png</code>"
+					 "text":"The first parameter in drawImage().  </br> I created an image object so I wouldn't have to refer to the html element later. </br> <code class='word_wrap'> var image_object=new Image(); \n image_object.onload= </br> image_object.onerror=</br></br>here are some other images to try:</br></br>https://s-media-cache-ak0.pinimg.com/originals/3e/ae/f0/3eaef0526bbb8f4d4bc01429a9548521.png</br></br>https://static.stereogum.com/uploads/2013/08/lauryn-hill.jpg</br></br>https://www.clipartkid.com/images/119/ninjastar-clip-art-at-clker-com-vector-clip-art-online-royalty-free-r0e3O2-clipart.png</br></br></code>"
 				 },
 					{
 					"label":"POINT OF ORIGIN",
@@ -176,8 +185,22 @@ function snake_pit(obj){
         obj_els[c_Nm] = ctrl_cont;
 
         obj_els[l_Nm].addEventListener("click",function(){
-          var sNbr = this.dataset.nbr;
-          run_contents(obj_els["contents"+sNbr]);
+
+					//reset the mouse events
+					canvas_mouse_events();
+
+					var sNbr = this.dataset.nbr;
+
+					//this helps to keep the mouse events neutralized when panels not open
+					console.log("old last clicked = ",last_panel_clicked_id);
+					if(last_panel_clicked_id == this.id){
+          	last_panel_clicked_id = "";
+						console.log("new last clicked = ",last_panel_clicked_id)
+					}else{
+						last_panel_clicked_id = this.id;
+						console.log("new last clicked = ",last_panel_clicked_id)
+						run_contents(obj_els["contents"+sNbr]);
+					}
 
           var targ_el = this.nextSibling;
           var classStr = targ_el.className;
@@ -432,15 +455,24 @@ img_ctrl_example.onclick = function()
 		{
 			var home = document.getElementById("img_ctrl_cont"+nbr);
 			home.innerHTML = "";
+			var style = (nbr == 1 || nbr == 2) ? "goofy" : "regular";
 
+			//reset slide input
+			sli_ctrl_inputA = "";
+			sli_ctrl_inputB = "";
 			//tear down the whole neighborhood
 			// @ slider issue
 			//sliders with the same id were existing in different dropdowns
+
 			var the_neighborhood = 	document.getElementsByClassName("img_ctrl_cont");
 			for(var n = 0; n < the_neighborhood.length; n++)
 				{
 					the_neighborhood[n].innerHTML = "";
 				}
+
+			//if i have to clear slider object do it here
+			sliderA = "";
+			sliderB = "";
 
 			//SLIDER A
 				var sli_ctrl_contA = document.createElement("div");
@@ -448,7 +480,7 @@ img_ctrl_example.onclick = function()
 				sli_ctrl_contA.className = "sli_ctrl_contA";//
 
 					//input
-						var sli_ctrl_inputA = document.createElement("input");
+						sli_ctrl_inputA = document.createElement("input");
 						sli_ctrl_inputA.id = "sli_ctrl_inputA";
 						sli_ctrl_inputA.className = "sli_ctrl_inputA";//
 						sli_ctrl_inputA.setAttribute("data-slider-id","sli_ctrl_inputA");//
@@ -456,18 +488,16 @@ img_ctrl_example.onclick = function()
 						sli_ctrl_inputA.setAttribute("data-slider-max","500");//
 						sli_ctrl_inputA.setAttribute("data-slider-step","1");//
 						var set_valA = slide_data("A",nbr);
-						sli_ctrl_inputA.setAttribute("data-slider-value", set_valA);//
+						var goof_A = set_valA * -1;//natural opposite effect
+						var ctrl_valA = (style == "goofy") ? goof_A : set_valA;
+						sli_ctrl_inputA.setAttribute("data-slider-value", ctrl_valA);//
 						//sli_ctrl_inputA.setAttribute("data-slider-handle","custom");//ninja stars section
 						sli_ctrl_inputA.type = "text";
 						sli_ctrl_inputA.onfocus = function(){this.select();}
 
 						sli_ctrl_inputA.onchange = function(){
-						sli_ctrl_boxA.value = sli_ctrl_inputA.value;
-						slide_data("A",nbr,{"value" : sli_ctrl_inputA.value, "val_oper":
-"add"});
-							//sliderA.setValue();
-							//src_x = sli_ctrl_inputA.value;
-							draw_me();
+
+						image_update({"ltr":"A", "nbr":nbr, "style":style, "mode":"motion", "slide_el":sli_ctrl_inputA, "box_el":sli_ctrl_boxA});
 						}//end on blur
 
 						var sli_ctrl_boxA = document.createElement("input");
@@ -476,12 +506,11 @@ img_ctrl_example.onclick = function()
 						sli_ctrl_boxA.value = set_valA;//src_x;
 						sli_ctrl_boxA.type = "number";
 						sli_ctrl_boxA.onfocus = function(){this.select(); }
+
 						sli_ctrl_boxA.oninput = function(){
-						sli_ctrl_inputA.value = sli_ctrl_boxA.value;
-							slide_data("A",nbr,{"value" :	sli_ctrl_boxA.value, "val_oper": "add"});
-							//src_x = sli_ctrl_inputA.value;
-							sliderA.setValue();
-							draw_me();
+
+													image_update({"ltr":"A", "nbr":nbr, "style":style, "mode":"input", "slide_el":sli_ctrl_inputA, "box_el":sli_ctrl_boxA});
+
 						}//end on oninput
 
 
@@ -496,7 +525,7 @@ img_ctrl_example.onclick = function()
 				sli_ctrl_contB.className = "sli_ctrl_contB";
 
 					//input
-						var sli_ctrl_inputB = document.createElement("input");
+						sli_ctrl_inputB = document.createElement("input");
 						sli_ctrl_inputB.id = "sli_ctrl_inputB";
 						sli_ctrl_inputB.className = "sli_ctrl_inputB";//
 						sli_ctrl_inputB.setAttribute("data-slider-id","sli_ctrl_inputB");//
@@ -504,18 +533,22 @@ img_ctrl_example.onclick = function()
 						sli_ctrl_inputB.setAttribute("data-slider-max","500");//
 						sli_ctrl_inputB.setAttribute("data-slider-step","1");//
 						var set_valB = slide_data("B",nbr);
-						sli_ctrl_inputB.setAttribute("data-slider-value",set_valB);
+						var goof_B = set_valA * -1;//natural opposite effect
+						var ctrl_valB = (style == "goofy") ? goof_B : set_valB;
+						sli_ctrl_inputB.setAttribute("data-slider-value",ctrl_valB);
 						sli_ctrl_inputB.setAttribute("data-slider-orientation","vertical");
 						//sli_ctrl_inputB.setAttribute("data-slider-handle","custom");//ninja stars section
 						sli_ctrl_inputB.type = "text";
 						sli_ctrl_inputB.onfocus = function(){this.select();}
+
+						//movement event
 						sli_ctrl_inputB.onchange = function(){
-						sli_ctrl_boxB.value = sli_ctrl_inputB.value;//
-							slide_data("B",nbr,{"value" :	sli_ctrl_inputB.value, "val_oper": "add"});
-							//sliderB.setValue();
-							//src_y = sli_ctrl_inputB.value;
-							draw_me();
-						}//end on blur
+
+						image_update({"ltr":"B", "nbr":nbr, "style":style, "mode":"motion", "slide_el":sli_ctrl_inputB, "box_el":sli_ctrl_boxB});
+
+						}//end on change
+
+
 	console.info("sli_ctrl_inputB");//
 			console.dir(sli_ctrl_inputB);
 
@@ -525,14 +558,87 @@ img_ctrl_example.onclick = function()
 						sli_ctrl_boxB.value = set_valB;//src_y;
 						sli_ctrl_boxB.type = "number";
 						sli_ctrl_boxB.onfocus = function(){this.select(); }
+
+						//input event
 						sli_ctrl_boxB.oninput = function(){
-						sli_ctrl_inputB.value = sli_ctrl_boxB.value;
-						slide_data("B",nbr,{"value" : 	sli_ctrl_boxB.value, "val_oper": "add"});
-							//src_y = sli_ctrl_inputB.value;
-							sliderB.setValue();
-							draw_me();
+
+							image_update({"ltr":"B", "nbr":nbr, "style":style, "mode":"input", "slide_el":sli_ctrl_inputB, "box_el":sli_ctrl_boxB});
+
 						}//end on oninput
 
+						var canvas_el = document.getElementById("tutorial");
+						canvas_mouse_events("set");
+
+						canvas.onmouseover = function()
+						{
+							canvas_mouse_events("set");
+
+							window.onmousemove = function(e)
+							{
+								//console.log(e);
+								if(mousedown == true)
+								{
+									var y = e.clientY;
+									var x = e.clientX;
+									var pos = getMousePos(e)
+									var pos_x = pos.x;
+									var pos_y = pos.y;
+
+									if(last_x != "default" && last_x != x)
+									{
+
+										if(x < last_x)
+										{
+											//then its going left
+											console.log("x is less");
+
+											var cur_val_x = parseInt(sli_ctrl_inputA.value);
+											sli_ctrl_inputA.value =  pos_x;//cur_val_x - 50;
+
+										}else
+										{
+											console.log("x is more");
+											var cur_val_x = parseInt(sli_ctrl_inputA.value);
+											sli_ctrl_inputA.value = pos_x//cur_val_x + 50;
+
+										}//end else x
+										console.log("new input value = ",sli_ctrl_inputA.value);
+										image_update({"ltr":"A", "nbr":nbr, "style":style, "mode":"motion", "slide_el":sli_ctrl_inputA, "box_el":sli_ctrl_boxA});//
+									}//end if last_x
+
+									if(last_y != "default")
+									{
+										if(y < last_y && last_y != y)
+										{
+											//then its going up
+											console.log("y is less");
+											var cur_val_y = parseInt(sli_ctrl_inputB.value);
+											sli_ctrl_inputB.value = pos_y//poscur_val_y - 50;
+										}else
+										{
+											console.log("y is more");
+											var cur_val_y = parseInt(sli_ctrl_inputB.value);
+											sli_ctrl_inputB.value = pos_y//cur_val_y + 50;
+										}//end else x
+										console.log("new input value = ",sli_ctrl_inputB.value);
+										image_update({"ltr":"B", "nbr":nbr, "style":style, "mode":"motion", "slide_el":sli_ctrl_inputB, "box_el":sli_ctrl_boxB});
+									}
+
+									last_x = x;
+									last_y = y;
+										console.log("mouse-x = ",x);
+									console.log("last_x = ",last_x);
+
+								}else
+								{
+									//clear the tracker
+									//last_x = "";
+									//last_y = "";
+								}
+								//end if
+
+							}//end canvas mousemove
+						}//on mouse over
 
 					sli_ctrl_contB.appendChild(sli_ctrl_inputB);
 					sli_ctrl_contB.appendChild(sli_ctrl_boxB);
@@ -540,7 +646,7 @@ img_ctrl_example.onclick = function()
 			home.appendChild(sli_ctrl_contA);
 			home.appendChild(sli_ctrl_contB);
 
-			var sliderA = new Slider('#sli_ctrl_inputA', {
+				sliderA = new Slider('#sli_ctrl_inputA', {
 				formatter: function(value) {
 					return 'Current value: ' + value;
 				}
@@ -549,7 +655,7 @@ img_ctrl_example.onclick = function()
 			console.dir(sliderA);
 			//http://seiyria.com/bootstrap-slider/
 
-			var sliderB = new Slider('#sli_ctrl_inputB', {
+				sliderB = new Slider('#sli_ctrl_inputB', {
 				formatter: function(value) {
 					return 'Current value: ' + value;
 				}
@@ -559,6 +665,92 @@ img_ctrl_example.onclick = function()
 			//END SLIDER B
 
 		}//end add_slider_input
+
+		function getMousePos(e) {
+			var canvas_el = document.getElementById("tutorial");
+			var rect = canvas_el.getBoundingClientRect();
+			return {
+				x: (e.clientX - rect.left) - canvas_size/2,
+				y: (e.clientY - rect.top) - canvas_size/2
+			};
+		}
+
+		var canvas_mouse_events = function(aVar,cId)
+		{
+			var action = aVar || "remove";
+			var canvas_id = cId;
+			var canvas_el = document.getElementById(cId);
+
+			if(action == "set"){
+
+						canvas.onmousedown = function(){ mousedown = true;console.log("onmousedown mousedown = ",mousedown);}
+						//canvas.onmouseover = function(){mousedown = false; console.log("onmouseover mousedown = ",mousedown);}
+						//canvas.onmouseout = function(){mousedown = false; console.log("onmouseout mousedown = ",mousedown);}
+						window.onmouseup = function()
+						{
+							mousedown = false;
+							canvas_mouse_events();
+
+						 }
+
+			}else{
+						mousedown = false;
+						canvas.onmousedown = "";
+						canvas.onmousemove = "";
+			}//end else
+		}//end canvas_mouse_events
+
+		var image_update = function(mObj){
+			console.info("image update running");
+
+			var style = mObj.style;
+			var ltr = mObj.ltr;
+
+			var nbr = mObj.nbr;
+			var mode = mObj.mode;//"motion" or not ("input" as other)
+
+			var slide_el = mObj.slide_el;
+			var box_el = mObj.box_el;
+
+			var target_el = (mode == "motion") ? slide_el : box_el;
+
+			if(mode == "motion")
+			{
+				//make regular and goofy foot (opposite) values
+				var val_regular_input =  target_el.value;
+				var val_goof_input = target_el.value * -1;
+				var input_val = (style == "goofy") ? val_goof_input : val_regular_input;
+				box_el.value = input_val;//unique to motion
+			}else
+			{
+				if(ltr = "A"){
+					sli_ctrl_inputA.value = box_el.value;
+				}else{
+					sli_ctrl_inputB.value = box_el.value;
+				}
+
+				var input_val = box_el.value;
+				//slide_data("B",nbr,{"value" : 	sli_ctrl_boxB.value, "val_oper": "add"});
+				//src_y = sli_ctrl_inputB.value;
+
+			}
+
+			slide_data(ltr,nbr,{"value" :	input_val, "val_oper": "add"});
+
+			if(mode == "input"){
+				if(ltr == "A")
+				{
+					//make these "object properties"
+					sliderA.setValue();//unique to input
+				}else
+				{
+					sliderB.setValue();//unique to input
+				}
+			}//end if mode ==  input
+
+			draw_me();
+
+		}//end image_update
 
 		var slide_data = function(ltr,nbr,obj)
 		{
