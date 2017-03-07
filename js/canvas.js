@@ -8,35 +8,43 @@ function snake_pit(obj){
   var canvas = document.getElementById('tutorial');
   var context_obj = canvas.getContext('2d');
   var display = (obj != undefined && obj.display != undefined) ? obj.display : "full";
+
+	//passes in the width and height from the constructor or
+	//use default values
+	var width =  (obj != undefined && obj.width != undefined) ? obj.width : 500;
+		var height =  (obj != undefined && obj.height != undefined) ? obj.height : 500;
+
+	//an object that helps sustain other object properties i didn't
+	//think of yet
   var obj_els = {};
-	var first_run = "true";
-	var sliderA = "";
-	var sliderB = "";
-	var sli_ctrl_inputA = "";
-	var	sli_ctrl_inputB = "";
-	var mousedown =  0;
-	var last_panel_clicked_id = "";
-	var last_x = "default";
-	var last_y = "default";
-	var canvas_size = 500;
+
+	//
+	var first_run = "true";//i can remove this
+
   //console.log(display);
   var img_default = ["https://upload.wikimedi",
                              "a.org/wikipedia/pt",
                              "/b/b5/Snake_Eyes_po",
                              "r_Robert_Atkins.jpg"]
                              .join("");
+
+	//takes constructors url parameter or uses default above
   var img_url = (obj != undefined && obj.url != undefined) ? obj.url : img_default;
 
-	//obj_globals
+	//obj_globals canvas default variables
 	var src_x = 0;
 	var src_y = 5;
 	var img_w = 500;
 	var img_h = 500;
 	var can_x = 0;
 	var can_y = 0;
-	var can_w = canvas_size;
-	var can_h = canvas_size;
+	var can_w = 500;
+	var can_h = 500;
 
+
+
+	//checks for local storage, if it exists and its in use it
+	//will use this data instead of the canvas default variables
 	try{
 	if(localStorage != undefined && localStorage.canvas_tutorial != undefined && localStorage.canvas_tutorial != "")
 	{
@@ -58,7 +66,8 @@ function snake_pit(obj){
 
    var image_object=new Image();
 
-      var draw_me = function() {
+	//core method called to do the actual canvas drawing
+   var draw_me = function() {
 
       //console.log("draw running");
 
@@ -67,7 +76,9 @@ function snake_pit(obj){
 
             image_object.onload=function(){
 
-              //basic
+              //while i was creating this i had stages, now i only
+							//use the full stage - actually the basic stage was
+							//for the sites image preview
               switch(display){
               case "basic":
                 context_obj.drawImage(tester, 0, 0);
@@ -79,13 +90,8 @@ function snake_pit(obj){
 
               case "full":
                 //canvas data here
-                //var imgwidth = image_object.offsetWidth || 600;
-									//img_w = imgwidth;
-                //var imgheight = image_object.offsetHeight || 600;
-									//img_h = imgheight;
-                //alert(tester.offsetHeight);
-                canvas.width = 500;
-                canvas.height = 500;
+                canvas.width = width;
+                canvas.height = height;
                 context_obj.drawImage(image_object, src_x, src_y, img_w, img_h, can_x, can_y, can_w, can_h);
               break;
 
@@ -93,19 +99,20 @@ function snake_pit(obj){
 
             }//end onload//
 
-
-            image_object.src=img_url;
+						//find the src url
+            image_object.src = img_url;
           }//end if
 
 
       }//end draw
 
+	 //array object used to hold each dropdown menu's values
       var ctrl_ary = [
 					{
 					"label":"THE IMAGE",
 					"contents":"IS",
 					 "title":"The Image Element",
-					 "text":"The first parameter in drawImage().  </br> I created an image object so I wouldn't have to refer to the html element later. </br> <code class='word_wrap'> var image_object=new Image(); \n image_object.onload= </br> image_object.onerror=</br></br>here are some other images to try:</br></br>https://s-media-cache-ak0.pinimg.com/originals/3e/ae/f0/3eaef0526bbb8f4d4bc01429a9548521.png</br></br>https://static.stereogum.com/uploads/2013/08/lauryn-hill.jpg</br></br>https://www.clipartkid.com/images/119/ninjastar-clip-art-at-clker-com-vector-clip-art-online-royalty-free-r0e3O2-clipart.png</br></br></code>"
+					 "text":"The first parameter in drawImage().  </br> I created an image object so I wouldn't have to refer to the html element later. </br> <code class='word_wrap'> var image_object=new Image(); \n image_object.onload= </br> image_object.onerror=</br></br>here are some other images to try:</br></br>https://s-media-cache-ak0.pinimg.com/originals/3e/ae/f0/3eaef0526bbb8f4d4bc01429a9548521.png</br></br>https://static.stereogum.com/uploads/2013/08/lauryn-hill.jpg</br></br>https://www.clipartkid.com/images/119/ninjastar-clip-art-at-clker-com-vector-clip-art-online-royalty-free-r0e3O2-clipart.png</br></br>https://s-media-cache-ak0.pinimg.com/originals/3e/ae/f0/3eaef0526bbb8f4d4bc01429a9548521.png</code>"
 				 },
 					{
 					"label":"POINT OF ORIGIN",
@@ -129,7 +136,7 @@ function snake_pit(obj){
 					"label":"THE DISPLAY",
 					"contents":"TD",
 					 "title":"The final frontier.",
-					 "text":"Even though this seems to be a repeat of the DRAW PIXELS section these pameters only work on what you see displayed ofter you've set all the rest of the drawImage values.</br></br><small>In other words: I could make up some fancy concept to tell you how its doing this with pixels or that from who knows where yada yada. But all this really seems to do is zoom in and out using what is already visible on the canvas.</small>"
+					 "text":"Even though this seems to be a repeat of the DRAW PIXELS section these pameters only work on what you see displayed after you've set all the rest of the drawImage values.</br></br><small>In other words: I could make up some fancy concept to tell you how its doing this with pixels or that from who knows where yada yada. But all this really seems to do is zoom in and out using what is already visible on the canvas.</small>"
 				 },
 					{
 					"label":"THE SAVE",
@@ -146,6 +153,7 @@ function snake_pit(obj){
 
 			]
 
+		//creates the initial display
     var control_panel = function(){
 
       //object properties//
@@ -160,6 +168,7 @@ function snake_pit(obj){
 
       var test_nbr = 3;
 
+			//loop creates the dropdown panel display
       for(var x = 0; x < ctrl_ary.length ; x++){
 
       var bx_Nm = "col_set" + x;
@@ -185,22 +194,8 @@ function snake_pit(obj){
         obj_els[c_Nm] = ctrl_cont;
 
         obj_els[l_Nm].addEventListener("click",function(){
-
-					//reset the mouse events
-					canvas_mouse_events();
-
-					var sNbr = this.dataset.nbr;
-
-					//this helps to keep the mouse events neutralized when panels not open
-					console.log("old last clicked = ",last_panel_clicked_id);
-					if(last_panel_clicked_id == this.id){
-          	last_panel_clicked_id = "";
-						console.log("new last clicked = ",last_panel_clicked_id)
-					}else{
-						last_panel_clicked_id = this.id;
-						console.log("new last clicked = ",last_panel_clicked_id)
-						run_contents(obj_els["contents"+sNbr]);
-					}
+          var sNbr = this.dataset.nbr;
+          run_contents(obj_els["contents"+sNbr]);
 
           var targ_el = this.nextSibling;
           var classStr = targ_el.className;
@@ -236,7 +231,7 @@ function snake_pit(obj){
     }//end control_panel
 
 
-
+		//read the panel's label property once clicked
     var run_contents = function(str)
     {
       switch(str)
@@ -279,6 +274,7 @@ function snake_pit(obj){
 
     }//end run_contents
 
+		//once a dropdown opens this sets up its content display
     var display_sect = function(nbr){
 
 			var add_class = (nbr != 0 && nbr != 5) ? " slider " : "";
@@ -318,6 +314,7 @@ function snake_pit(obj){
 
     }//end display_sect
 
+		//content for THE IMAGE dropdown display
 		var add_image_input = function()
 		{
 			var home = document.getElementById("img_ctrl_cont0");
@@ -351,29 +348,30 @@ function snake_pit(obj){
 				draw_me(); }
 
 			var img_ctrl_example = document.createElement("button");
-img_ctrl_example.id = "img_ctrl_example";
-img_ctrl_example.className = " img_ctrl_example img_ctrl_reset pointer ready";//
-img_ctrl_example.innerText = "see my example";
-img_ctrl_example.onclick = function()
-{
-		img_url = "https://static.stereogum.com/uploads/2013/08/lauryn-hill.jpg";
-		src_x = 65;
-		src_y = 80;
-		img_w = 300;
-		img_h = 300;
-		can_x = 25;
-		can_y = 25;
-		can_w = 450;
-		can_h = 450;
+			img_ctrl_example.id = "img_ctrl_example";
+			img_ctrl_example.className = " img_ctrl_example img_ctrl_reset pointer ready";//
+			img_ctrl_example.innerText = "see my example";
+			img_ctrl_example.onclick = function()
+			{
+					img_url = "https://static.stereogum.com/uploads/2013/08/lauryn-hill.jpg";
+					src_x = 65;
+					src_y = 80;
+					img_w = 300;
+					img_h = 300;
+					can_x = 25;
+					can_y = 25;
+					can_w = 450;
+					can_h = 450;
 
-		draw_me();
-}//end example onclick
+					draw_me();
+			}//end example onclick
 
 			home.appendChild(img_ctrl_input);
 			home.appendChild(img_ctrl_reset);
 			home.appendChild(img_ctrl_example);
 		}//end add_image_input
 
+		//save button for use in THE SAVE section
 		var add_save_btn = function()
 		{
 
@@ -410,6 +408,8 @@ img_ctrl_example.onclick = function()
 			try{
 				if(localStorage != undefined && localStorage.canvas_tutorial != undefined && localStorage.canvas_tutorial != "")
 				{
+						//if local storage is currently in use saving
+						//users image preferences show this cancel btn
 						 var clear_ctrl_btn = document.createElement("button");
 						clear_ctrl_btn.id = "save_ctrl_btn";
 						clear_ctrl_btn.className = "clear_ctrl_btn save_ctrl_btn ready";//
@@ -450,29 +450,20 @@ img_ctrl_example.onclick = function()
 			}//end catch
 		}//end ls_test
 
-
+		//display the sliders B (y - vertical) A (x - horizontal)
 		var add_slider_input = function(nbr)
 		{
 			var home = document.getElementById("img_ctrl_cont"+nbr);
 			home.innerHTML = "";
-			var style = (nbr == 1 || nbr == 2) ? "goofy" : "regular";
-
-			//reset slide input
-			sli_ctrl_inputA = "";
-			sli_ctrl_inputB = "";
+			var style = (nbr == 1 || nbr == 2) ? "goofy" : "default";
 			//tear down the whole neighborhood
 			// @ slider issue
 			//sliders with the same id were existing in different dropdowns
-
 			var the_neighborhood = 	document.getElementsByClassName("img_ctrl_cont");
 			for(var n = 0; n < the_neighborhood.length; n++)
 				{
 					the_neighborhood[n].innerHTML = "";
 				}
-
-			//if i have to clear slider object do it here
-			sliderA = "";
-			sliderB = "";
 
 			//SLIDER A
 				var sli_ctrl_contA = document.createElement("div");
@@ -480,7 +471,7 @@ img_ctrl_example.onclick = function()
 				sli_ctrl_contA.className = "sli_ctrl_contA";//
 
 					//input
-						sli_ctrl_inputA = document.createElement("input");
+						var sli_ctrl_inputA = document.createElement("input");
 						sli_ctrl_inputA.id = "sli_ctrl_inputA";
 						sli_ctrl_inputA.className = "sli_ctrl_inputA";//
 						sli_ctrl_inputA.setAttribute("data-slider-id","sli_ctrl_inputA");//
@@ -497,7 +488,16 @@ img_ctrl_example.onclick = function()
 
 						sli_ctrl_inputA.onchange = function(){
 
-						image_update({"ltr":"A", "nbr":nbr, "style":style, "mode":"motion", "slide_el":sli_ctrl_inputA, "box_el":sli_ctrl_boxA});
+							//make regular and goofy foot (opposite) values
+							var val_regular_input =   sli_ctrl_inputA.value;
+							var val_goof_input =  sli_ctrl_inputA.value * -1;
+							var input_val = (style == "goofy") ? val_goof_input : val_regular_input;
+
+						sli_ctrl_boxA.value = input_val;//
+							slide_data("A",nbr,{"value" :	input_val, "val_oper": "add"});
+							//sliderA.setValue();
+							//src_x = sli_ctrl_inputA.value;
+							draw_me();
 						}//end on blur
 
 						var sli_ctrl_boxA = document.createElement("input");
@@ -506,11 +506,12 @@ img_ctrl_example.onclick = function()
 						sli_ctrl_boxA.value = set_valA;//src_x;
 						sli_ctrl_boxA.type = "number";
 						sli_ctrl_boxA.onfocus = function(){this.select(); }
-
 						sli_ctrl_boxA.oninput = function(){
-
-													image_update({"ltr":"A", "nbr":nbr, "style":style, "mode":"input", "slide_el":sli_ctrl_inputA, "box_el":sli_ctrl_boxA});
-
+						sli_ctrl_inputA.value = sli_ctrl_boxA.value;
+							slide_data("A",nbr,{"value" :	sli_ctrl_boxA.value, "val_oper": "add"});
+							//src_x = sli_ctrl_inputA.value;
+							sliderA.setValue();
+							draw_me();
 						}//end on oninput
 
 
@@ -525,7 +526,7 @@ img_ctrl_example.onclick = function()
 				sli_ctrl_contB.className = "sli_ctrl_contB";
 
 					//input
-						sli_ctrl_inputB = document.createElement("input");
+						var sli_ctrl_inputB = document.createElement("input");
 						sli_ctrl_inputB.id = "sli_ctrl_inputB";
 						sli_ctrl_inputB.className = "sli_ctrl_inputB";//
 						sli_ctrl_inputB.setAttribute("data-slider-id","sli_ctrl_inputB");//
@@ -533,22 +534,26 @@ img_ctrl_example.onclick = function()
 						sli_ctrl_inputB.setAttribute("data-slider-max","500");//
 						sli_ctrl_inputB.setAttribute("data-slider-step","1");//
 						var set_valB = slide_data("B",nbr);
-						var goof_B = set_valA * -1;//natural opposite effect
+						var goof_B = set_valB * -1;//natural opposite effect
 						var ctrl_valB = (style == "goofy") ? goof_B : set_valB;
 						sli_ctrl_inputB.setAttribute("data-slider-value",ctrl_valB);
 						sli_ctrl_inputB.setAttribute("data-slider-orientation","vertical");
 						//sli_ctrl_inputB.setAttribute("data-slider-handle","custom");//ninja stars section
 						sli_ctrl_inputB.type = "text";
 						sli_ctrl_inputB.onfocus = function(){this.select();}
-
-						//movement event
 						sli_ctrl_inputB.onchange = function(){
 
-						image_update({"ltr":"B", "nbr":nbr, "style":style, "mode":"motion", "slide_el":sli_ctrl_inputB, "box_el":sli_ctrl_boxB});
+							//make regular and goofy foot (opposite) values
+							var val_regular_input =   sli_ctrl_inputB.value;
+							var val_goof_input =  sli_ctrl_inputB.value * -1;
+							var input_val = (style == "goofy") ? val_goof_input : val_regular_input;
 
-						}//end on change
-
-
+						sli_ctrl_boxB.value = input_val;//
+							slide_data("B",nbr,{"value" :	input_val, "val_oper": "add"});
+							//sliderB.setValue();
+							//src_y = sli_ctrl_inputB.value;
+							draw_me();
+						}//end on blur
 	console.info("sli_ctrl_inputB");//
 			console.dir(sli_ctrl_inputB);
 
@@ -558,87 +563,14 @@ img_ctrl_example.onclick = function()
 						sli_ctrl_boxB.value = set_valB;//src_y;
 						sli_ctrl_boxB.type = "number";
 						sli_ctrl_boxB.onfocus = function(){this.select(); }
-
-						//input event
 						sli_ctrl_boxB.oninput = function(){
-
-							image_update({"ltr":"B", "nbr":nbr, "style":style, "mode":"input", "slide_el":sli_ctrl_inputB, "box_el":sli_ctrl_boxB});
-
+						sli_ctrl_inputB.value = sli_ctrl_boxB.value;
+						slide_data("B",nbr,{"value" : 	sli_ctrl_boxB.value, "val_oper": "add"});
+							//src_y = sli_ctrl_inputB.value;
+							sliderB.setValue();
+							draw_me();
 						}//end on oninput
 
-						var canvas_el = document.getElementById("tutorial");
-						canvas_mouse_events("set");
-
-						canvas.onmouseover = function()
-						{
-							canvas_mouse_events("set");
-
-							window.onmousemove = function(e)
-							{
-								//console.log(e);
-								if(mousedown == true)
-								{
-									var y = e.clientY;
-									var x = e.clientX;
-									var pos = getMousePos(e)
-									var pos_x = pos.x;
-									var pos_y = pos.y;
-
-									if(last_x != "default" && last_x != x)
-									{
-
-										if(x < last_x)
-										{
-											//then its going left
-											console.log("x is less");
-
-											var cur_val_x = parseInt(sli_ctrl_inputA.value);
-											sli_ctrl_inputA.value =  pos_x;//cur_val_x - 50;
-
-										}else
-										{
-											console.log("x is more");
-											var cur_val_x = parseInt(sli_ctrl_inputA.value);
-											sli_ctrl_inputA.value = pos_x//cur_val_x + 50;
-
-										}//end else x
-										console.log("new input value = ",sli_ctrl_inputA.value);
-										image_update({"ltr":"A", "nbr":nbr, "style":style, "mode":"motion", "slide_el":sli_ctrl_inputA, "box_el":sli_ctrl_boxA});//
-									}//end if last_x
-
-									if(last_y != "default")
-									{
-										if(y < last_y && last_y != y)
-										{
-											//then its going up
-											console.log("y is less");
-											var cur_val_y = parseInt(sli_ctrl_inputB.value);
-											sli_ctrl_inputB.value = pos_y//poscur_val_y - 50;
-										}else
-										{
-											console.log("y is more");
-											var cur_val_y = parseInt(sli_ctrl_inputB.value);
-											sli_ctrl_inputB.value = pos_y//cur_val_y + 50;
-										}//end else x
-										console.log("new input value = ",sli_ctrl_inputB.value);
-										image_update({"ltr":"B", "nbr":nbr, "style":style, "mode":"motion", "slide_el":sli_ctrl_inputB, "box_el":sli_ctrl_boxB});
-									}
-
-									last_x = x;
-									last_y = y;
-										console.log("mouse-x = ",x);
-									console.log("last_x = ",last_x);
-
-								}else
-								{
-									//clear the tracker
-									//last_x = "";
-									//last_y = "";
-								}
-								//end if
-
-							}//end canvas mousemove
-						}//on mouse over
 
 					sli_ctrl_contB.appendChild(sli_ctrl_inputB);
 					sli_ctrl_contB.appendChild(sli_ctrl_boxB);
@@ -646,7 +578,7 @@ img_ctrl_example.onclick = function()
 			home.appendChild(sli_ctrl_contA);
 			home.appendChild(sli_ctrl_contB);
 
-				sliderA = new Slider('#sli_ctrl_inputA', {
+			var sliderA = new Slider('#sli_ctrl_inputA', {
 				formatter: function(value) {
 					return 'Current value: ' + value;
 				}
@@ -655,7 +587,7 @@ img_ctrl_example.onclick = function()
 			console.dir(sliderA);
 			//http://seiyria.com/bootstrap-slider/
 
-				sliderB = new Slider('#sli_ctrl_inputB', {
+			var sliderB = new Slider('#sli_ctrl_inputB', {
 				formatter: function(value) {
 					return 'Current value: ' + value;
 				}
@@ -666,92 +598,7 @@ img_ctrl_example.onclick = function()
 
 		}//end add_slider_input
 
-		function getMousePos(e) {
-			var canvas_el = document.getElementById("tutorial");
-			var rect = canvas_el.getBoundingClientRect();
-			return {
-				x: (e.clientX - rect.left) - canvas_size/2,
-				y: (e.clientY - rect.top) - canvas_size/2
-			};
-		}
-
-		var canvas_mouse_events = function(aVar,cId)
-		{
-			var action = aVar || "remove";
-			var canvas_id = cId;
-			var canvas_el = document.getElementById(cId);
-
-			if(action == "set"){
-
-						canvas.onmousedown = function(){ mousedown = true;console.log("onmousedown mousedown = ",mousedown);}
-						//canvas.onmouseover = function(){mousedown = false; console.log("onmouseover mousedown = ",mousedown);}
-						//canvas.onmouseout = function(){mousedown = false; console.log("onmouseout mousedown = ",mousedown);}
-						window.onmouseup = function()
-						{
-							mousedown = false;
-							canvas_mouse_events();
-
-						 }
-
-			}else{
-						mousedown = false;
-						canvas.onmousedown = "";
-						canvas.onmousemove = "";
-			}//end else
-		}//end canvas_mouse_events
-
-		var image_update = function(mObj){
-			console.info("image update running");
-
-			var style = mObj.style;
-			var ltr = mObj.ltr;
-
-			var nbr = mObj.nbr;
-			var mode = mObj.mode;//"motion" or not ("input" as other)
-
-			var slide_el = mObj.slide_el;
-			var box_el = mObj.box_el;
-
-			var target_el = (mode == "motion") ? slide_el : box_el;
-
-			if(mode == "motion")
-			{
-				//make regular and goofy foot (opposite) values
-				var val_regular_input =  target_el.value;
-				var val_goof_input = target_el.value * -1;
-				var input_val = (style == "goofy") ? val_goof_input : val_regular_input;
-				box_el.value = input_val;//unique to motion
-			}else
-			{
-				if(ltr = "A"){
-					sli_ctrl_inputA.value = box_el.value;
-				}else{
-					sli_ctrl_inputB.value = box_el.value;
-				}
-
-				var input_val = box_el.value;
-				//slide_data("B",nbr,{"value" : 	sli_ctrl_boxB.value, "val_oper": "add"});
-				//src_y = sli_ctrl_inputB.value;
-
-			}
-
-			slide_data(ltr,nbr,{"value" :	input_val, "val_oper": "add"});
-
-			if(mode == "input"){
-				if(ltr == "A")
-				{
-					//make these "object properties"
-					sliderA.setValue();//unique to input
-				}else
-				{
-					sliderB.setValue();//unique to input
-				}
-			}//end if mode ==  input
-
-			draw_me();
-
-		}//end image_update
-
+		//used to process changes or to return default values
 		var slide_data = function(ltr,nbr,obj)
 		{
 			//span_set2 view_span span3 view_span3
